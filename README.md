@@ -72,6 +72,9 @@ hosting avoids both problems.
 ./build-game.sh --seed-ports         # see below
 ```
 
+Start with `low`. The generator's XML rewrite step scales badly with texture
+count, so `mid` takes noticeably longer than `low` and `high` takes hours.
+
 It wraps the port's own `wasm/get_emsdk.sh`, `wasm/build_deps.sh`,
 `wasm/build.sh` and `wasm/pack_assets.sh`, and works around three things that
 otherwise stop them:
