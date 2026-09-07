@@ -161,9 +161,9 @@
     <div class="row">
       <label for="quality">Texture quality</label>
       <select id="quality">
-        <option value="low">Low &mdash; ~120 MiB download</option>
-        <option value="mid">Medium &mdash; ~171 MiB download</option>
-        <option value="high">High &mdash; ~249 MiB download</option>
+        <option value="low" data-label="Low">Low</option>
+        <option value="mid" data-label="Medium">Medium</option>
+        <option value="high" data-label="High">High</option>
       </select>
     </div>
 
@@ -718,6 +718,45 @@ async function loadConfig() {
   }
 }
 
+// Read each bundle's manifest so the picker shows real download sizes and only
+// offers the quality levels this build actually produced.
+async function probeBundles() {
+  const options = Array.from(els.quality.options);
+  const sizes = await Promise.all(options.map(async (opt) => {
+    try {
+      const response = await fetch(`${GAME_BASE}data_${opt.value}.tar.gz.manifest`,
+                                   { cache: "no-cache" });
+      if (!response.ok) return null;
+      const size = parseInt((await response.text()).split("\n")[0], 10);
+      return Number.isFinite(size) ? size : 0;
+    } catch (error) {
+      return null;
+    }
+  }));
+
+  let available = 0;
+  options.forEach((opt, i) => {
+    const size = sizes[i];
+    const label = opt.dataset.label;
+    if (size === null) {
+      opt.disabled = true;
+      opt.textContent = `${label} \u2014 not built`;
+    } else {
+      available++;
+      opt.disabled = false;
+      const whole = Math.round(size / (1024 * 1024));
+      opt.textContent = size > 0 ? `${label} \u2014 ${whole} MiB download` : label;
+    }
+  });
+
+  const selected = els.quality.selectedOptions[0];
+  if (selected && selected.disabled) {
+    const first = options.find((opt) => !opt.disabled);
+    if (first) els.quality.value = first.value;
+  }
+  return available;
+}
+
 function missingBuildNote() {
   showNote("The compiled game was not found", `
     <p>This page is only the launcher. It expects the Emscripten build output in
@@ -804,6 +843,19 @@ async function boot() {
     await mountHome();
   } catch (error) {
     appendLog("warning: saved data is unavailable (" + error + ")");
+  }
+
+  setStatus("Looking for game data\u2026");
+  const available = await probeBundles();
+  if (!available) {
+    hideProgress();
+    setStatus("No game data found.", true);
+    showNote("The engine is here but the game data is not", `
+      <p>${escapeHtml(GAME_BASE)} has the compiled engine but none of the
+      <code>data_*.tar.gz.manifest</code> bundles, so there is nothing to load.
+      They come from the asset packing step:</p>
+      <pre><code>./build-game.sh --quality low</code></pre>`);
+    return;
   }
 
   hideProgress();
