@@ -72,8 +72,9 @@ hosting avoids both problems.
 ./build-game.sh --seed-ports         # see below
 ```
 
-Start with `low`. The generator's XML rewrite step scales badly with texture
-count, so `mid` takes noticeably longer than `low` and `high` takes hours.
+Packing dominates the time and scales with texture count. Measured on four
+cores: about 15 minutes for `low`, 18 for `mid` and 26 for `high`, on top of
+roughly an hour for the toolchain, dependencies and engine.
 
 It wraps the port's own `wasm/get_emsdk.sh`, `wasm/build_deps.sh`,
 `wasm/build.sh` and `wasm/pack_assets.sh`, and works around three things that
