@@ -1,0 +1,3 @@
+# Emscripten build output: supertuxkart.js/.wasm and the packed asset bundles.
+# Hundreds of megabytes, produced by wasm/build.sh and wasm/pack_assets.sh.
+/game/

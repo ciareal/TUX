@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>SuperTuxKart</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<style>
+  :root {
+    --bg: #10141c;
+    --panel: #1b2130;
+    --panel-2: #232b3d;
+    --line: #313b52;
+    --text: #e8ecf5;
+    --muted: #97a2ba;
+    --accent: #f6a01a;
+    --accent-2: #ffb945;
+    --ok: #4ec97a;
+    --err: #ff6b6b;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg); color: var(--text);
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    overscroll-behavior: none;
+  }
+  #canvas {
+    position: absolute; inset: 0;
+    width: 100vw; height: 100vh;
+    display: block; background: #000;
+    z-index: 1; outline: none;
+  }
+  #overlay {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; overflow-y: auto;
+    background: radial-gradient(circle at 50% 30%, #1d2537 0%, #0b0e14 100%);
+  }
+  #panel {
+    width: 100%; max-width: 560px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 24px 20px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.5);
+  }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  header img { width: 52px; height: 52px; image-rendering: auto; }
+  header h1 { margin: 0; font-size: 21px; letter-spacing: .2px; }
+  header p { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; }
+  .blurb { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+  .blurb a { color: var(--accent-2); text-decoration: none; }
+  .blurb a:hover { text-decoration: underline; }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .row + .row { margin-top: 12px; }
+  label { color: var(--muted); font-size: 13px; }
+  select {
+    background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 7px 9px; font-size: 13px; font-family: inherit;
+  }
+  button {
+    font: inherit; font-weight: 600; font-size: 13.5px;
+    border: 1px solid transparent; border-radius: 9px;
+    padding: 9px 18px; cursor: pointer;
+    background: var(--accent); color: #1a1206;
+    transition: background .15s ease, opacity .15s ease;
+  }
+  button:hover:not(:disabled) { background: var(--accent-2); }
+  button:disabled { opacity: .45; cursor: default; }
+  button.ghost {
+    background: transparent; color: var(--muted);
+    border-color: var(--line); font-weight: 500;
+  }
+  button.ghost:hover:not(:disabled) { background: var(--panel-2); color: var(--text); }
+  #progress {
+    margin-top: 16px; height: 8px; border-radius: 999px;
+    background: var(--panel-2); overflow: hidden; display: none;
+  }
+  #progress.on { display: block; }
+  #bar {
+    height: 100%; width: 0%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width .2s ease;
+  }
+  #bar.indet {
+    width: 35% !important;
+    animation: slide 1.1s ease-in-out infinite alternate;
+  }
+  @keyframes slide { from { margin-left: 0; } to { margin-left: 65%; } }
+  #status { margin-top: 10px; font-size: 13px; color: var(--muted); min-height: 20px; }
+  #status.err { color: var(--err); }
+  .note {
+    margin-top: 16px; padding: 12px 14px;
+    background: var(--panel-2); border: 1px solid var(--line);
+    border-left: 3px solid var(--err); border-radius: 8px;
+    font-size: 13px; display: none;
+  }
+  .note.on { display: block; }
+  .note h3 { margin: 0 0 6px; font-size: 13.5px; color: var(--text); }
+  .note p { margin: 0 0 8px; color: var(--muted); }
+  .note p:last-child { margin-bottom: 0; }
+  .note code, pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre {
+    margin: 8px 0 0; padding: 10px 12px;
+    background: #0d1119; border: 1px solid var(--line); border-radius: 7px;
+    font-size: 12px; overflow-x: auto; color: #cbd5e8; white-space: pre;
+  }
+  #log {
+    margin-top: 14px; max-height: 150px; overflow-y: auto;
+    background: #0d1119; border: 1px solid var(--line); border-radius: 7px;
+    padding: 9px 11px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11.5px; color: #9fb0cc; white-space: pre-wrap; word-break: break-word;
+    display: none;
+  }
+  #log.on { display: block; }
+  footer { margin-top: 16px; font-size: 11.5px; color: #6c7691; }
+  .spacer { flex: 1 1 auto; }
+  #hud {
+    position: absolute; top: 10px; right: 12px; z-index: 3;
+    display: none; gap: 8px;
+  }
+  #hud.on { display: flex; }
+  #hud button {
+    background: rgba(20,25,36,.72); color: #cfd8ea;
+    border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(6px);
+    padding: 6px 12px; font-size: 12px; font-weight: 500;
+    opacity: .35;
+  }
+  #hud button:hover { opacity: 1; }
+</style>
+</head>
+<body>
+
+<canvas id="canvas" tabindex="-1"></canvas>
+
+<div id="hud">
+  <button id="fullscreen" title="Toggle fullscreen">Fullscreen</button>
+  <button id="save" title="Flush saved data to browser storage">Save data</button>
+</div>
+
+<div id="overlay">
+  <div id="panel">
+    <header>
+      <img id="logo" alt="" src="data:image/png;base64,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">
+      <div>
+        <h1>SuperTuxKart</h1>
+        <p>WebAssembly port, running in your browser</p>
+      </div>
+    </header>
+
+    <p class="blurb">
+      An experimental build of SuperTuxKart compiled to WebAssembly with Emscripten.
+      The port is by <a href="https://github.com/ading2210/" target="_blank" rel="noopener">ading2210</a>
+      (<a href="https://github.com/ading2210/stk-code/tree/wasm" target="_blank" rel="noopener">source</a>).
+      Rendering uses OpenGL ES 2, networking is not available, and performance is below native.
+    </p>
+
+    <div class="row">
+      <label for="quality">Texture quality</label>
+      <select id="quality">
+        <option value="low">Low &mdash; ~120 MiB download</option>
+        <option value="mid">Medium &mdash; ~171 MiB download</option>
+        <option value="high">High &mdash; ~249 MiB download</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <button id="start" disabled>Start game</button>
+      <div class="spacer"></div>
+      <button id="clear" class="ghost" title="Delete cached game data from this browser">Clear cache</button>
+    </div>
+
+    <div id="progress"><div id="bar"></div></div>
+    <div id="status">Starting up&hellip;</div>
+
+    <div class="note" id="note">
+      <h3 id="note-title"></h3>
+      <div id="note-body"></div>
+    </div>
+
+    <div id="log"></div>
+
+    <footer>
+      Assets are cached in this browser after the first download. Game progress and settings
+      are stored locally and persist between sessions.
+    </footer>
+  </div>
+</div>
+
+<!-- ------------------------------------------------------------------ -->
+<!-- Stage 0: configure the Emscripten Module and pull in the engine.    -->
+<!-- This must run before supertuxkart.js executes, and the engine must  -->
+<!-- be injected as a real parser-inserted <script> element so that      -->
+<!-- document.currentScript resolves, which is how Emscripten works out  -->
+<!-- where to load supertuxkart.wasm and the pthread workers from.       -->
+<!-- ------------------------------------------------------------------ -->
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+
+  // Where the compiled game lives. Defaults to ./game/ next to this file, so
+  // the page works from a subdirectory. Override with ?base=https://host/path/
+  var base = params.get("base") || "game/";
+  if (!base.endsWith("/")) base += "/";
+  var gameBase;
+  try {
+    gameBase = new URL(base, document.baseURI).href;
+  } catch (e) {
+    gameBase = new URL("game/", document.baseURI).href;
+  }
+  globalThis.STK_BASE = gameBase;
+  globalThis.STK_LOG = [];
+
+  // Emscripten picks this up instead of creating its own Module object.
+  globalThis.Module = {
+    canvas: document.getElementById("canvas"),
+    locateFile: function (path) { return gameBase + path; },
+    print: function (text) {
+      globalThis.STK_LOG.push(text);
+      console.log(text);
+    },
+    printErr: function (text) {
+      globalThis.STK_LOG.push(text);
+      console.warn(text);
+      if (globalThis.STK_onStderr) globalThis.STK_onStderr(text);
+    },
+    onAbort: function (what) {
+      if (globalThis.STK_onAbort) globalThis.STK_onAbort(String(what));
+    }
+  };
+
+  document.write(
+    '<script src="' + gameBase.replace(/"/g, "%22") + 'supertuxkart.js"><\/script>'
+  );
+})();
+</script>
+
+<!-- ------------------------------------------------------------------ -->
+<!-- Stage 1: hold back the program's entry point.                       -->
+<!-- Emscripten only signals that the runtime is ready by calling run(). -->
+<!-- We swallow that first call so the game does not start before the    -->
+<!-- assets are in the virtual filesystem, and record that the runtime   -->
+<!-- came up. Ordering matters, so this stays an inline classic script   -->
+<!-- directly after the engine.                                          -->
+<!-- ------------------------------------------------------------------ -->
+<script>
+globalThis.STK_ENGINE_PRESENT = (typeof run !== "undefined");
+globalThis.ready = false;
+if (globalThis.STK_ENGINE_PRESENT) {
+  var stk_real_run = run;
+  run = function () {
+    if (globalThis.ready) stk_real_run();
+    globalThis.ready = true;
+  };
+}
+</script>
+
+<!-- ------------------------------------------------------------------ -->
+<!-- Stage 2: the loader.                                                -->
+<!-- No external dependencies: gzip via DecompressionStream, tar parsed  -->
+<!-- inline, so this file works offline and needs no CDN.                -->
+<!-- ------------------------------------------------------------------ -->
+<script type="module">
+"use strict";
+
+const DB_NAME = "stk_db";
+const STORE = "stk_store";
+const CACHE_VERSION = 2;          // bump to invalidate every cached bundle
+const CHUNK_LIMIT = 16 * 1024 * 1024;
+
+const $ = (id) => document.getElementById(id);
+const els = {
+  overlay: $("overlay"), panel: $("panel"), start: $("start"), quality: $("quality"),
+  clear: $("clear"), status: $("status"), progress: $("progress"), bar: $("bar"),
+  note: $("note"), noteTitle: $("note-title"), noteBody: $("note-body"),
+  log: $("log"), hud: $("hud"), fullscreen: $("fullscreen"), save: $("save"),
+  canvas: $("canvas")
+};
+
+const GAME_BASE = globalThis.STK_BASE;
+let idbfsMount = null;
+let syncing = false;
+let launched = false;
+
+/* ---------------------------------------------------------------- UI --- */
+
+function setStatus(text, isError = false) {
+  els.status.textContent = text;
+  els.status.classList.toggle("err", isError);
+}
+
+function setProgress(fraction) {
+  if (fraction === null) {
+    els.progress.classList.add("on");
+    els.bar.classList.add("indet");
+    return;
+  }
+  els.progress.classList.add("on");
+  els.bar.classList.remove("indet");
+  els.bar.style.width = Math.max(0, Math.min(1, fraction)) * 100 + "%";
+}
+
+function hideProgress() {
+  els.progress.classList.remove("on");
+  els.bar.classList.remove("indet");
+  els.bar.style.width = "0%";
+}
+
+function showNote(title, bodyHtml) {
+  els.noteTitle.textContent = title;
+  els.noteBody.innerHTML = bodyHtml;
+  els.note.classList.add("on");
+}
+
+function appendLog(line) {
+  els.log.classList.add("on");
+  els.log.textContent += line + "\n";
+  els.log.scrollTop = els.log.scrollHeight;
+}
+
+function mib(bytes) {
+  return (bytes / (1024 * 1024)).toFixed(1);
+}
+
+/* --------------------------------------------------------- preflight --- */
+
+// The engine is built with -pthread and -sMIN_WEBGL_VERSION=2, so the page
+// needs SharedArrayBuffer (which requires cross-origin isolation) and WebGL 2.
+function preflight() {
+  if (location.protocol === "file:") {
+    showNote("This page has to be served over HTTP", `
+      <p>Opening the file directly does not work. The game needs a web server that
+      sends two cross-origin isolation headers, otherwise the browser withholds
+      <code>SharedArrayBuffer</code> and the engine's threads cannot start.</p>
+      <p>From the folder containing this file:</p>
+      <pre><code>python3 serve.py</code></pre>
+      <p>Then open <code>http://localhost:8000</code>.</p>`);
+    return false;
+  }
+
+  if (!globalThis.crossOriginIsolated || typeof SharedArrayBuffer === "undefined") {
+    showNote("Cross-origin isolation is not enabled", `
+      <p>The engine uses threads, so the page must be served with these two
+      response headers:</p>
+      <pre><code>Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp</code></pre>
+      <p>The bundled <code>serve.py</code> sets them for local use, and
+      <code>_headers</code> does the same on Netlify or Cloudflare Pages.</p>`);
+    return false;
+  }
+
+  const gl = document.createElement("canvas").getContext("webgl2");
+  if (!gl) {
+    showNote("WebGL 2 is unavailable", `
+      <p>This build requires WebGL 2. Your browser reports it as unsupported,
+      which usually means hardware acceleration is switched off or the GPU is
+      blocklisted. Check <code>chrome://gpu</code> or <code>about:support</code>.</p>`);
+    return false;
+  }
+
+  if (typeof DecompressionStream === "undefined") {
+    showNote("Browser is too old", `
+      <p>This loader unpacks the game data with <code>DecompressionStream</code>,
+      which this browser does not provide. Use a current version of Chrome,
+      Edge, Firefox or Safari.</p>`);
+    return false;
+  }
+
+  return true;
+}
+
+/* ------------------------------------------------------- IndexedDB ----- */
+
+let dbHandle = null;
+
+function openDb() {
+  if (dbHandle) return Promise.resolve(dbHandle);
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onerror = () => reject(req.error);
+    req.onblocked = () => reject(new Error("IndexedDB is blocked by another tab"));
+    req.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
+    };
+    req.onsuccess = () => { dbHandle = req.result; resolve(dbHandle); };
+  });
+}
+
+function asPromise(request) {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function dbGet(key) {
+  const db = await openDb();
+  return asPromise(db.transaction(STORE, "readonly").objectStore(STORE).get(key));
+}
+
+async function dbPut(key, value) {
+  const db = await openDb();
+  const tx = db.transaction(STORE, "readwrite");
+  const done = new Promise((resolve, reject) => {
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error || new Error("write aborted"));
+  });
+  tx.objectStore(STORE).put(value, key);
+  return done;
+}
+
+async function dropDb() {
+  if (dbHandle) { dbHandle.close(); dbHandle = null; }
+  await asPromise(indexedDB.deleteDatabase(DB_NAME));
+}
+
+/* ------------------------------------------------------------- tar ----- */
+
+function cstr(bytes) {
+  let end = bytes.indexOf(0);
+  if (end === -1) end = bytes.length;
+  return new TextDecoder().decode(bytes.subarray(0, end)).trim();
+}
+
+function octal(bytes) {
+  const text = cstr(bytes).replace(/[^0-7]/g, "");
+  return text ? parseInt(text, 8) : 0;
+}
+
+// Streaming tar reader. Entries are handed over one at a time, so peak memory
+// stays at roughly the size of the largest single file rather than the whole
+// several-hundred-megabyte archive.
+async function untar(stream, onEntry) {
+  const reader = stream.getReader();
+  let parts = [];
+  let have = 0;
+  let ended = false;
+
+  async function ensure(n) {
+    while (have < n && !ended) {
+      const { value, done } = await reader.read();
+      if (done) { ended = true; break; }
+      if (value && value.length) { parts.push(value); have += value.length; }
+    }
+    return have >= n;
+  }
+
+  function take(n) {
+    const out = new Uint8Array(n);
+    let off = 0;
+    while (off < n) {
+      const head = parts[0];
+      const need = n - off;
+      if (head.length <= need) {
+        out.set(head, off);
+        off += head.length;
+        parts.shift();
+      } else {
+        out.set(head.subarray(0, need), off);
+        parts[0] = head.subarray(need);
+        off += need;
+      }
+    }
+    have -= n;
+    return out;
+  }
+
+  let longName = null;
+
+  while (true) {
+    if (!(await ensure(512))) break;
+    const header = take(512);
+
+    let blank = true;
+    for (let i = 0; i < 512; i++) { if (header[i] !== 0) { blank = false; break; } }
+    if (blank) break;                       // end-of-archive marker
+
+    const size = octal(header.subarray(124, 136));
+    const type = String.fromCharCode(header[156]) || "0";
+    const padded = Math.ceil(size / 512) * 512;
+
+    let name;
+    if (longName !== null) {
+      name = longName;
+      longName = null;
+    } else {
+      const main = cstr(header.subarray(0, 100));
+      const prefix = cstr(header.subarray(345, 500));
+      name = prefix ? prefix + "/" + main : main;
+    }
+
+    if (type === "L") {                      // GNU long filename
+      if (!(await ensure(padded))) break;
+      longName = cstr(take(padded).subarray(0, size));
+      continue;
+    }
+    if (type === "K" || type === "x" || type === "g") {   // extended headers
+      if (!(await ensure(padded))) break;
+      take(padded);
+      continue;
+    }
+
+    if (!(await ensure(padded))) break;
+    const block = take(padded);
+
+    if (type === "5" || name.endsWith("/")) {
+      onEntry(name, null);
+    } else if (type === "0" || type === "\0" || type === "7") {
+      onEntry(name, block.subarray(0, size));
+    }
+  }
+}
+
+/* ------------------------------------------------- emscripten FS ------- */
+
+function mkdirp(path) {
+  const parts = path.split("/").filter(Boolean);
+  let current = "";
+  for (const part of parts) {
+    current += "/" + part;
+    try { FS.mkdir(current); } catch (e) { /* already there */ }
+  }
+}
+
+function writeEntry(root, name, data) {
+  let rel = name;
+  if (rel.startsWith("./")) rel = rel.slice(1);
+  else if (rel === "." || rel === "") rel = "/";
+  else if (!rel.startsWith("/")) rel = "/" + rel;
+
+  const target = root + rel;
+  if (data === null) {
+    mkdirp(target);
+    return;
+  }
+  const slash = target.lastIndexOf("/");
+  if (slash > 0) mkdirp(target.slice(0, slash));
+  FS.writeFile(target, data);
+}
+
+/* --------------------------------------------------- data bundles ------ */
+
+async function fetchManifest(url) {
+  const response = await fetch(url + ".manifest");
+  if (!response.ok) {
+    throw new Error(`missing ${url.split("/").pop()}.manifest (HTTP ${response.status})`);
+  }
+  const lines = (await response.text()).split("\n").map((l) => l.trim()).filter(Boolean);
+  const total = parseInt(lines.shift(), 10);
+  // The manifest never lists itself; drop it if a hand-made one does.
+  const chunks = lines.filter((name) => !name.endsWith(".manifest"));
+  if (!chunks.length) throw new Error("manifest lists no chunks");
+  return { total: Number.isFinite(total) ? total : 0, chunks };
+}
+
+// Feeds the compressed archive into the pipeline a chunk at a time, either
+// from the network (caching each chunk as it lands) or straight from cache.
+function compressedSource(baseUrl, manifest, cacheKey, cached, onBytes) {
+  let index = 0;
+  return new ReadableStream({
+    async pull(controller) {
+      if (index >= manifest.chunks.length) {
+        if (!cached) {
+          await dbPut(cacheKey + "#meta", {
+            version: CACHE_VERSION,
+            count: manifest.chunks.length,
+            total: manifest.total
+          });
+        }
+        controller.close();
+        return;
+      }
+
+      let bytes;
+      if (cached) {
+        const stored = await dbGet(cacheKey + "#" + index);
+        if (!stored) throw new Error("cached data is incomplete, clear the cache and retry");
+        bytes = stored instanceof Uint8Array ? stored : new Uint8Array(stored);
+      } else {
+        const response = await fetch(baseUrl + manifest.chunks[index]);
+        if (!response.ok) {
+          throw new Error(`failed to download ${manifest.chunks[index]} (HTTP ${response.status})`);
+        }
+        bytes = new Uint8Array(await response.arrayBuffer());
+        await dbPut(cacheKey + "#" + index, bytes);
+      }
+
+      index++;
+      onBytes(bytes.length, index, manifest.chunks.length);
+      controller.enqueue(bytes);
+    }
+  });
+}
+
+async function isCached(cacheKey, manifest) {
+  try {
+    const meta = await dbGet(cacheKey + "#meta");
+    return !!meta && meta.version === CACHE_VERSION && meta.count === manifest.chunks.length;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function loadAssets(quality) {
+  const url = GAME_BASE + `data_${quality}.tar.gz`;
+  const baseUrl = url.slice(0, url.lastIndexOf("/") + 1);
+  const cacheKey = `data_${quality}`;
+
+  setStatus("Reading the asset manifest…");
+  setProgress(null);
+  const manifest = await fetchManifest(url);
+
+  const cached = await isCached(cacheKey, manifest);
+  let seen = 0;
+
+  const source = compressedSource(baseUrl, manifest, cacheKey, cached, (n, done, count) => {
+    seen += n;
+    if (manifest.total > 0) {
+      setProgress(seen / manifest.total);
+      setStatus(cached
+        ? `Loading cached data… ${mib(seen)} / ${mib(manifest.total)} MiB`
+        : `Downloading game data… ${mib(seen)} / ${mib(manifest.total)} MiB (part ${done} of ${count})`);
+    } else {
+      setStatus(`${cached ? "Loading" : "Downloading"} game data… ${mib(seen)} MiB`);
+    }
+  });
+
+  let files = 0;
+  await untar(source.pipeThrough(new DecompressionStream("gzip")), (name, data) => {
+    writeEntry("/data", name, data);
+    if (data !== null && ++files % 400 === 0) {
+      setStatus(`Unpacking… ${files} files`);
+    }
+  });
+
+  if (!files) throw new Error("the archive unpacked to zero files");
+  setStatus(`Unpacked ${files} files.`);
+}
+
+/* ------------------------------------------------------- persistence --- */
+
+function syncFs(populate = false) {
+  if (!idbfsMount || syncing) return Promise.resolve();
+  syncing = true;
+  return new Promise((resolve, reject) => {
+    idbfsMount.type.syncfs(idbfsMount, populate, (err) => {
+      syncing = false;
+      if (err) reject(err); else resolve();
+    });
+  });
+}
+
+async function mountHome() {
+  mkdirp("/home");
+  idbfsMount = FS.mount(IDBFS, {}, "/home").mount;
+  await syncFs(true);
+}
+
+/* -------------------------------------------------------------- boot --- */
+
+function waitForRuntime(timeoutMs = 90000) {
+  return new Promise((resolve, reject) => {
+    if (globalThis.ready) return resolve();
+    const started = Date.now();
+    const timer = setInterval(() => {
+      if (globalThis.ready) {
+        clearInterval(timer);
+        resolve();
+      } else if (Date.now() - started > timeoutMs) {
+        clearInterval(timer);
+        reject(new Error("the engine did not finish starting up"));
+      }
+    }, 50);
+  });
+}
+
+async function loadConfig() {
+  // patch_ws.js in the engine reads globalThis.config when a socket is opened,
+  // so this always has to end up defined, even when there is no config file.
+  let config = { ws_enabled: false };
+  try {
+    const response = await fetch(new URL("config.json", document.baseURI), { cache: "no-cache" });
+    if (response.ok) config = Object.assign(config, await response.json());
+  } catch (e) { /* optional file */ }
+  globalThis.config = config;
+
+  if (config.ws_enabled && config.ws_proxy) {
+    if (typeof Module.websocket === "undefined") Module.websocket = {};
+    if (typeof SOCKFS !== "undefined" && typeof SOCKFS.websocketArgs !== "undefined") {
+      SOCKFS.websocketArgs.url = config.ws_proxy;
+    }
+    Module.websocket.url = config.ws_proxy;
+  }
+}
+
+function missingBuildNote() {
+  showNote("The compiled game was not found", `
+    <p>This page is only the launcher. It expects the Emscripten build output in
+    <code>${GAME_BASE}</code>, which should hold <code>supertuxkart.js</code>,
+    <code>supertuxkart.wasm</code> and the <code>data_*.tar.gz.*</code> asset
+    parts, none of which are in this repository because of their size.</p>
+    <p>Build them from the port's source tree:</p>
+    <pre><code>git clone -b wasm https://github.com/ading2210/stk-code
+cd stk-code
+wasm/get_emsdk.sh &amp;&amp; wasm/build_deps.sh &amp;&amp; wasm/build.sh
+wasm/pack_assets.sh ../stk-assets</code></pre>
+    <p>Then copy <code>stk-code/wasm/web/game/</code> next to this file. If the
+    build is already hosted somewhere else, point this page at it instead with
+    <code>?base=https://host/path/</code>.</p>`);
+}
+
+async function startGame() {
+  els.start.disabled = true;
+  els.quality.disabled = true;
+  els.clear.disabled = true;
+  els.note.classList.remove("on");
+
+  try {
+    await loadAssets(els.quality.value);
+
+    setStatus("Launching…");
+    setProgress(null);
+    await new Promise((r) => requestAnimationFrame(r));
+    await new Promise((r) => requestAnimationFrame(r));
+
+    launched = true;
+    run();                       // hands control to the game's main()
+
+    els.overlay.style.display = "none";
+    els.hud.classList.add("on");
+    els.canvas.focus();
+    syncFs().catch(() => {});
+    console.info("SuperTuxKart is running. Keeping devtools open will slow it down.");
+  } catch (error) {
+    launched = false;
+    console.error(error);
+    setStatus(String(error && error.message ? error.message : error), true);
+    setProgress(0);
+    hideProgress();
+    els.start.disabled = false;
+    els.quality.disabled = false;
+    els.clear.disabled = false;
+    showNote("Could not start the game", `
+      <p>${String(error && error.message ? error.message : error)
+        .replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]))}</p>
+      <p>If the download was interrupted, clearing the cache and retrying usually
+      fixes it.</p>`);
+  }
+}
+
+async function boot() {
+  if (!preflight()) {
+    setStatus("Cannot run here.", true);
+    return;
+  }
+
+  if (!globalThis.STK_ENGINE_PRESENT) {
+    setStatus("Game files are missing.", true);
+    missingBuildNote();
+    return;
+  }
+
+  setStatus("Starting the engine…");
+  setProgress(null);
+
+  try {
+    await waitForRuntime();
+  } catch (error) {
+    setStatus(String(error.message), true);
+    hideProgress();
+    showNote("The engine failed to start", `
+      <p>The WebAssembly runtime never reported itself ready. The browser console
+      usually has the underlying error. A truncated or mismatched
+      <code>supertuxkart.wasm</code> is the most common cause.</p>`);
+    return;
+  }
+
+  await loadConfig();
+  try {
+    await mountHome();
+  } catch (error) {
+    appendLog("warning: saved data is unavailable (" + error + ")");
+  }
+
+  hideProgress();
+  setStatus("Ready.");
+  els.start.disabled = false;
+  els.start.onclick = startGame;
+}
+
+/* ------------------------------------------------------------ wiring --- */
+
+globalThis.sync_idbfs = syncFs;      // user_config.cpp calls this on save
+globalThis.load_idbfs = mountHome;
+
+globalThis.STK_onAbort = (what) => {
+  setStatus("The engine stopped: " + what, true);
+  els.overlay.style.display = "flex";
+  els.hud.classList.remove("on");
+  appendLog("abort: " + what);
+};
+
+globalThis.STK_onStderr = (text) => {
+  if (/error|fatal|assert/i.test(text)) appendLog(text);
+};
+
+els.clear.onclick = async () => {
+  els.clear.disabled = true;
+  setStatus("Clearing cached data…");
+  try {
+    await dropDb();
+    setStatus("Cache cleared. Reload the page to start fresh.");
+  } catch (error) {
+    setStatus("Could not clear the cache: " + error, true);
+  }
+  els.clear.disabled = false;
+};
+
+els.fullscreen.onclick = () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen().catch(() => {});
+  els.canvas.focus();
+};
+
+els.save.onclick = async () => {
+  els.save.disabled = true;
+  try { await syncFs(); } catch (e) { /* nothing useful to do */ }
+  els.save.disabled = false;
+};
+
+// The engine only flushes on config save, so mirror it out when the tab goes
+// away too, otherwise recent progress can be lost.
+addEventListener("pagehide", () => { if (launched) syncFs().catch(() => {}); });
+document.addEventListener("visibilitychange", () => {
+  if (launched && document.visibilityState === "hidden") syncFs().catch(() => {});
+});
+
+// Stop the page from scrolling out from under the game.
+addEventListener("keydown", (event) => {
+  if (!launched) return;
+  const blocked = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "Tab"];
+  if (blocked.includes(event.code)) event.preventDefault();
+}, { passive: false });
+
+els.canvas.addEventListener("click", () => { if (launched) els.canvas.focus(); });
+
+boot();
+</script>
+</body>
+</html>
