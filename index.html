@@ -205,11 +205,17 @@
   // the page works from a subdirectory. Override with ?base=https://host/path/
   var base = params.get("base") || "game/";
   if (!base.endsWith("/")) base += "/";
+  var fallback = new URL("game/", document.baseURI).href;
   var gameBase;
   try {
-    gameBase = new URL(base, document.baseURI).href;
+    var resolved = new URL(base, document.baseURI);
+    // ?base= is attacker-supplied in a shared link, so only ever load the
+    // engine over http(s); anything else falls back to the bundled path.
+    gameBase = (resolved.protocol === "https:" || resolved.protocol === "http:")
+      ? resolved.href
+      : fallback;
   } catch (e) {
-    gameBase = new URL("game/", document.baseURI).href;
+    gameBase = fallback;
   }
   globalThis.STK_BASE = gameBase;
   globalThis.STK_LOG = [];
@@ -307,6 +313,11 @@ function hideProgress() {
   els.progress.classList.remove("on");
   els.bar.classList.remove("indet");
   els.bar.style.width = "0%";
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
 function showNote(title, bodyHtml) {
@@ -701,7 +712,7 @@ async function loadConfig() {
 function missingBuildNote() {
   showNote("The compiled game was not found", `
     <p>This page is only the launcher. It expects the Emscripten build output in
-    <code>${GAME_BASE}</code>, which should hold <code>supertuxkart.js</code>,
+    <code>${escapeHtml(GAME_BASE)}</code>, which should hold <code>supertuxkart.js</code>,
     <code>supertuxkart.wasm</code> and the <code>data_*.tar.gz.*</code> asset
     parts, none of which are in this repository because of their size.</p>
     <p>Build them from the port's source tree:</p>
@@ -746,8 +757,7 @@ async function startGame() {
     els.quality.disabled = false;
     els.clear.disabled = false;
     showNote("Could not start the game", `
-      <p>${String(error && error.message ? error.message : error)
-        .replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]))}</p>
+      <p>${escapeHtml(error && error.message ? error.message : error)}</p>
       <p>If the download was interrupted, clearing the cache and retrying usually
       fixes it.</p>`);
   }
