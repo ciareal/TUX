@@ -63,31 +63,40 @@ hosting avoids both problems.
 
 ### Option B: build it yourself
 
-Roughly an hour on four cores, plus a large download. Linux is the tested path.
+`build-game.sh` runs the whole pipeline and drops the result straight into
+`game/`. Roughly an hour on four cores, plus a large download. Linux only.
 
 ```
-git clone -b wasm https://github.com/ading2210/stk-code
-git clone https://github.com/supertuxkart/stk-assets      # ~1.5 GB
-cd stk-code
-
-wasm/get_emsdk.sh          # Emscripten SDK
-wasm/build_deps.sh         # ogg, vorbis, openssl, zlib, curl, jpeg, png,
-                           # freetype, harfbuzz, all compiled to wasm
-wasm/build.sh              # the engine itself
-
-sudo apt install imagemagick vorbis-tools pngquant advancecomp libjpeg-progs optipng
-wasm/pack_assets.sh ../stk-assets
+./build-game.sh                      # low-quality textures
+./build-game.sh --quality all        # all three bundles
+./build-game.sh --seed-ports         # see below
 ```
 
-The output lands in `stk-code/wasm/web/game/`. Copy that directory here.
+It wraps the port's own `wasm/get_emsdk.sh`, `wasm/build_deps.sh`,
+`wasm/build.sh` and `wasm/pack_assets.sh`, and works around three things that
+otherwise stop them:
 
-If `embuilder` fails to download an SDL port because your network blocks GitHub
-archive downloads, seed emscripten's port cache from git instead: clone the
-tagged source into `<emsdk>/upstream/emscripten/cache/ports/<name>/<subdir>/`
-and write the expected archive URL into
-`cache/ports/<name>/.emscripten_url`. Emscripten then treats the port as already
-fetched. The subdirectory name is the `SUBDIR` value in
-`tools/ports/<name>.py`.
+- **embuilder port names gained hyphens.** The port's `build.sh` asks for
+  `sdl2_image_jpg`, which current Emscripten rejects as an unknown target. The
+  name is now `sdl2_image-jpg`, and because the engine is built with `-pthread`
+  the `-mt` variants are the ones that actually get linked.
+- **cmake needs `-DCHECK_ASSETS=off`** unless a `stk-assets` tree sits next to
+  the source, and it needs several passes before its `find_package` cache
+  settles. The port's README notes that repeated-run quirk; the script just
+  retries.
+- **Emscripten fetches SDL and friends as GitHub archive zips.** Where those
+  are blocked but git is not, `--seed-ports` clones each port at its pinned tag
+  into `<emsdk>/upstream/emscripten/cache/ports/<name>/<subdir>/` and writes the
+  expected archive URL to `cache/ports/<name>/.emscripten_url`. Emscripten then
+  treats the port as already downloaded. Tags are pinned per emsdk release, so
+  if a port still tries to download, read `TAG` and `SUBDIR` from
+  `upstream/emscripten/tools/ports/<name>.py`.
+
+The karts and tracks live in SVN rather than git, so the script pulls the 1.4
+source release tarball, which carries the same content as a plain download.
+
+To do it by hand instead, follow the port's own README and apply the three fixes
+above.
 
 ## What this launcher does differently
 
@@ -128,11 +137,12 @@ These come from the port itself, not the launcher:
 ## Layout
 
 ```
-index.html    the launcher, self-contained
-serve.py      local server with the required isolation headers
-config.json   websocket proxy settings, off by default
-_headers      the same headers for Netlify / Cloudflare Pages
-game/         the compiled build, not in git
+index.html     the launcher, self-contained
+build-game.sh  builds the engine and asset bundles into game/
+serve.py       local server with the required isolation headers
+config.json    websocket proxy settings, off by default
+_headers       the same headers for Netlify / Cloudflare Pages
+game/          the compiled build, not in git
 ```
 
 ## Licensing
