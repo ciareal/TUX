@@ -64,7 +64,17 @@ hosting avoids both problems.
 ### Option B: build it yourself
 
 `build-game.sh` runs the whole pipeline and drops the result straight into
-`game/`. Roughly an hour on four cores, plus a large download. Linux only.
+`game/`. Roughly an hour on four cores, plus a large download.
+
+It needs Linux. On Windows use WSL2, and clone inside the WSL filesystem
+(`~/TUX`) rather than under `/mnt/c` — building across the Windows filesystem
+boundary is drastically slower. Serve from WSL and open `http://localhost:8000`
+in the ordinary Windows browser; WSL2 forwards the port. macOS is untested: the
+asset scripts assume GNU coreutils, so `du -b`, `find -printf` and `split
+--numeric-suffixes` would need the `coreutils` package and `g`-prefixed tools.
+
+Playing has no such constraint. Once `game/` exists, any modern browser on any
+platform can run it, since the launcher is served over HTTP like any web page.
 
 ```
 ./build-game.sh                      # low-quality textures
