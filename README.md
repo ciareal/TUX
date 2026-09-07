@@ -5,37 +5,66 @@ A self-contained launcher page for the [SuperTuxKart WebAssembly port][port] by
 browser can run the game, downloads and unpacks the asset bundle, caches it, and
 hands control to the engine.
 
-The compiled engine is **not** in this repository. It is a few hundred megabytes
-of WebAssembly and packed game data, so you either build it or point the page at
-a copy that is already hosted somewhere. Both routes are below.
+The compiled game is committed here, so a fresh clone plays straight away with
+nothing to install and nothing to build.
 
 [port]: https://github.com/ading2210/stk-code/tree/wasm
 [author]: https://github.com/ading2210/
 
-## Running it
+## Playing it
 
-The page cannot be opened as a `file://` URL. The engine is compiled with
-threads, so it needs `SharedArrayBuffer`, which browsers only expose to pages
-that are *cross-origin isolated*. That requires two response headers:
+### Windows
+
+Double-click **`START-GAME.bat`**. It starts a small local server and opens the
+game in your browser. Leave the black window open while you play, and close it
+when you are done.
+
+Nothing is installed. The server is `serve.ps1`, which runs on the PowerShell
+that already ships with Windows.
+
+Get the files with `git clone` rather than GitHub's "Download ZIP" if you can.
+The batch file checks that `game/supertuxkart.wasm` actually arrived and says so
+if it did not.
+
+### macOS and Linux
+
+```
+python3 serve.py
+```
+
+Then open <http://localhost:8000>.
+
+### Why a server at all
+
+Opening `index.html` from the file manager will not work, and the page will tell
+you so. The engine is compiled with threads, so it needs `SharedArrayBuffer`,
+which browsers only hand to pages that are *cross-origin isolated*. That takes
+two response headers no `file://` URL can carry:
 
 ```
 Cross-Origin-Opener-Policy: same-origin
 Cross-Origin-Embedder-Policy: require-corp
 ```
 
-`serve.py` sets them for local use:
+Both bundled servers set them. `serve.ps1` uses a plain loopback socket rather
+than Windows' `HttpListener`, which would want an administrator prompt to
+reserve the URL. For static hosting, `_headers` applies the same two headers on
+Netlify and Cloudflare Pages.
+
+The first launch unpacks about 115 MiB into the browser's storage, which takes a
+few seconds. After that it starts from that cache.
+
+## Better textures
+
+Only the low-quality bundle is committed; the medium and high ones would add
+another 400 MB to the clone. The picker greys out the levels that are absent.
+To add them, see the build section below and run:
 
 ```
-python3 serve.py
+./build-game.sh --quality mid     # or high
 ```
 
-Then open <http://localhost:8000>. If the headers are missing, or the build is
-absent, the page says so and tells you what to fix rather than failing silently.
-
-For static hosting, `_headers` applies the same two headers on Netlify and
-Cloudflare Pages. On other hosts, configure them yourself.
-
-## Getting the game files
+## Rebuilding from source
 
 The launcher expects this next to `index.html`:
 
@@ -164,12 +193,14 @@ From the asset pipeline:
 ## Layout
 
 ```
-index.html     the launcher, self-contained
-build-game.sh  builds the engine and asset bundles into game/
-serve.py       local server with the required isolation headers
-config.json    websocket proxy settings, off by default
-_headers       the same headers for Netlify / Cloudflare Pages
-game/          the compiled build, not in git
+START-GAME.bat  double-click this on Windows
+serve.ps1       the server it starts, using built-in PowerShell
+serve.py        the same thing for macOS and Linux
+index.html      the launcher, self-contained
+game/           the compiled engine and the low-quality asset bundle
+build-game.sh   rebuilds those, and the larger bundles
+config.json     websocket proxy settings, off by default
+_headers        the same isolation headers for Netlify / Cloudflare Pages
 ```
 
 ## Licensing

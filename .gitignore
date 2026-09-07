@@ -1,7 +1,8 @@
-# Emscripten build output: supertuxkart.js/.wasm and the packed asset bundles.
-# Hundreds of megabytes, produced by build-game.sh.
-/game/
-
 # Scratch tree build-game.sh works in: the emsdk, the port's source, the
 # compiled dependencies and the extracted assets. Several gigabytes.
 /build/
+
+# The low-quality bundle is committed so the game runs straight from a clone.
+# The larger ones are not: they add another 400 MB. Build them if you want them.
+/game/data_mid.tar.gz.*
+/game/data_high.tar.gz.*
