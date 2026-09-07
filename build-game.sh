@@ -17,7 +17,13 @@
 #      makes Emscripten treat the port as already downloaded.
 #
 # Usage:
-#   ./build-game.sh [--seed-ports] [--quality low|mid|high|all] [--jobs N]
+#   ./build-game.sh [--seed-ports] [--keep-png] [--quality low|mid|high|all] [--jobs N]
+#
+# --keep-png disables the asset generator's PNG-to-JPEG conversion. That step
+# rewrites the texture names embedded in the .spm meshes, but it misses some, so
+# a handful of powerup textures (bubblegum, swatter, the nitro models) end up
+# asked for as .png when only a .jpg was written, and render untextured. Keeping
+# PNG costs bundle size and avoids that entirely.
 #
 # Expect roughly an hour on four cores plus a large download. Linux only.
 
@@ -27,11 +33,13 @@ WORK="${STK_WORK:-$(pwd)/build}"
 QUALITY="low"
 JOBS="$(nproc --all 2>/dev/null || echo 4)"
 SEED_PORTS=0
+KEEP_PNG=0
 HERE="$(cd "$(dirname "$0")" && pwd)"
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --seed-ports) SEED_PORTS=1; shift ;;
+    --keep-png) KEEP_PNG=1; shift ;;
     --quality) QUALITY="$2"; shift 2 ;;
     --jobs) JOBS="$2"; shift 2 ;;
     -h|--help) sed -n '2,26p' "$0"; exit 0 ;;
@@ -160,8 +168,10 @@ pack_one() {
   local name="$1" size="$2"
   local out="$STK/wasm/web/game/$name.tar.gz"
   local dir="$STK/wasm/web/game/$name"
-  say "packing $name (${size}px textures)"
-  ASSETS_PATHS="$ASSETS" OUTPUT_PATH="$dir" TEXTURE_SIZE="$size" \
+  local convert=1
+  [ "$KEEP_PNG" = 1 ] && convert=0
+  say "packing $name (${size}px textures, jpeg conversion=$convert)"
+  ASSETS_PATHS="$ASSETS" OUTPUT_PATH="$dir" TEXTURE_SIZE="$size" CONVERT_TO_JPG="$convert" \
     "$STK/android/generate_assets.sh" || die "asset generation failed for $name"
   [ -d "$dir/data" ] || die "no data directory produced for $name"
   [ -x "$dir/data/optimize_data.sh" ] && ( cd "$dir/data" && ./optimize_data.sh )

@@ -125,14 +125,27 @@ compatible with the same build output, with these changes:
 - **Saved data is flushed** when the tab is hidden or closed, not only when the
   engine writes its config.
 
-## Known limits of the port
+## Known limits
 
-These come from the port itself, not the launcher:
+From the port itself, not the launcher:
 
 - Networking and online multiplayer do not work and can hang the game.
 - Rendering uses OpenGL ES 2 through the legacy renderer, so performance is well
-  below native.
+  below native. The engine logs `OpenGL version is too old!` on startup; that is
+  expected and the game still runs.
 - Roughly 500 MB of memory is needed, so 32-bit browsers will struggle.
+
+From the asset pipeline:
+
+- The generator converts textures to JPEG and rewrites the texture names
+  embedded in the `.spm` meshes to match, but it misses a few. A handful of
+  powerup textures are then requested as `.png` when only a `.jpg` was written,
+  and the engine logs `STKTexManager: Failed to load bubblegum.png` and similar
+  for the bubblegum, swatter and nitro models, which render untextured. Build
+  with `--keep-png` to skip the conversion and avoid it, at the cost of a larger
+  bundle.
+- The karts and tracks come from the 1.4 release while the engine is built from
+  the port's branch, so a small amount of drift like this is expected.
 
 ## Layout
 
