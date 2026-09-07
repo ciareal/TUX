@@ -220,16 +220,25 @@
   globalThis.STK_BASE = gameBase;
   globalThis.STK_LOG = [];
 
+  // The engine is chatty while it plays, so keep only a recent window rather
+  // than growing an array for the whole session.
+  var LOG_LIMIT = 500;
+  function record(text) {
+    var log = globalThis.STK_LOG;
+    log.push(text);
+    if (log.length > LOG_LIMIT) log.splice(0, log.length - LOG_LIMIT);
+  }
+
   // Emscripten picks this up instead of creating its own Module object.
   globalThis.Module = {
     canvas: document.getElementById("canvas"),
     locateFile: function (path) { return gameBase + path; },
     print: function (text) {
-      globalThis.STK_LOG.push(text);
+      record(text);
       console.log(text);
     },
     printErr: function (text) {
-      globalThis.STK_LOG.push(text);
+      record(text);
       console.warn(text);
       if (globalThis.STK_onStderr) globalThis.STK_onStderr(text);
     },
