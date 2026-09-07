@@ -1,0 +1,4 @@
+# These are run by bash, under WSL on Windows. Git's autocrlf would rewrite
+# them to CRLF on checkout, and bash then fails with
+# "bad interpreter: /bin/bash^M". Pin them to LF regardless of platform.
+*.sh text eol=lf
