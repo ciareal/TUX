@@ -13,20 +13,26 @@ nothing to install and nothing to build.
 
 ## Playing it
 
-Double-click either of these. Both start a small local server and open the game
-in your browser. Leave the window that appears open while you play, and close it
-when you are done.
+Double-click **`serve.py`**, then open the address it prints:
 
-- **`serve.py`** — if you have Python. Works on Windows, macOS and Linux.
-- **`START-GAME.bat`** — Windows only, and needs no Python at all. It uses the
-  PowerShell that already ships with Windows.
+```
+http://localhost:8000/
+```
 
-Either way nothing is installed. From a terminal, `python3 serve.py` does the
-same thing, and takes a port number if you want one other than 8000.
+Leave that window open while you play, and close it when you are done. Nothing
+is installed. Works on Windows, macOS and Linux, wherever Python is.
+
+From a terminal it is the same thing, and takes a port if you want one other
+than 8000:
+
+```
+python3 serve.py
+python3 serve.py 9000
+```
 
 Get the files with `git clone` rather than GitHub's "Download ZIP" if you can.
-Both launchers check that `game/supertuxkart.wasm` actually arrived and say so
-if it did not.
+`serve.py` checks that `game/supertuxkart.wasm` actually arrived and says so if
+it did not.
 
 ### Why a server at all
 
@@ -40,10 +46,9 @@ Cross-Origin-Opener-Policy: same-origin
 Cross-Origin-Embedder-Policy: require-corp
 ```
 
-Both bundled servers set them, which is why an arbitrary static server will not
-do. `serve.ps1` uses a plain loopback socket rather than Windows'
-`HttpListener`, which would want an administrator prompt to reserve the URL. For
-static hosting, `_headers` applies the same two headers on Netlify and
+`serve.py` sets them, which is why an arbitrary static server will not do:
+Python's own `http.server` sends neither, so the game would load and then hang.
+For static hosting, `_headers` applies the same two headers on Netlify and
 Cloudflare Pages.
 
 The first launch unpacks about 115 MiB into the browser's storage, which takes a
@@ -189,8 +194,6 @@ From the asset pipeline:
 
 ```
 serve.py        double-click to play, anywhere Python is installed
-START-GAME.bat  double-click to play on Windows without Python
-serve.ps1       the server that batch file starts, on built-in PowerShell
 index.html      the launcher, self-contained
 game/           the compiled engine and the low-quality asset bundle
 build-game.sh   rebuilds those, and the larger bundles

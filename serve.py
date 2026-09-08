@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Start SuperTuxKart. Double-click this file, or run it from a terminal.
 
-It serves this folder over HTTP and opens the game in your browser.
+It serves this folder over HTTP. Open the printed address in your browser.
 
 A server is needed because the engine is compiled with threads, so the browser
 only grants it SharedArrayBuffer on a page that is *cross-origin isolated*.
@@ -17,16 +17,12 @@ fetch alongside the main thread.
 
     python3 serve.py            # http://localhost:8000/
     python3 serve.py 9000       # a specific port
-    python3 serve.py --no-browser
 """
 
 import argparse
 import functools
 import os
-import socket
 import sys
-import threading
-import webbrowser
 from http import server
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -84,8 +80,6 @@ def main():
                         help="folder to serve (defaults to this file's folder)")
     parser.add_argument("--bind", default="127.0.0.1",
                         help="address to bind (use 0.0.0.0 to allow other machines)")
-    parser.add_argument("--no-browser", action="store_true",
-                        help="do not open a browser window")
     args = parser.parse_args()
 
     root = os.path.abspath(args.dir)
@@ -125,16 +119,13 @@ def main():
     url = "http://%s:%d/" % (host, port)
 
     print()
-    print("  SuperTuxKart is being served from:")
-    print("  %s" % url)
+    print("  SuperTuxKart is ready. Open this in your browser:")
+    print()
+    print("      %s" % url)
     print()
     print("  Leave this window open while you play.")
     print("  Close it, or press Ctrl+C, to stop.")
     print()
-
-    if not args.no_browser:
-        # after a beat, so the first request lands on a listening socket
-        threading.Timer(0.5, lambda: webbrowser.open(url)).start()
 
     try:
         httpd.serve_forever()
