@@ -13,26 +13,52 @@ nothing to install and nothing to build.
 
 ## Playing it
 
-Double-click **`serve.py`**, then open the address it prints:
+Download the repository, double-click **`serve.py`**, then open the address it
+prints:
 
 ```
 http://localhost:8000/
 ```
 
-Leave that window open while you play, and close it when you are done. Nothing
-is installed. Works on Windows, macOS and Linux, wherever Python is.
+Press **Start game**. The first launch unpacks about 115 MiB into the browser's
+storage and takes a few seconds; after that it starts from that cache. Leave the
+console window open while you play, and close it when you are done.
 
-From a terminal it is the same thing, and takes a port if you want one other
-than 8000:
+Nothing is installed, and the whole thing works offline. You need Python, which
+macOS and most Linux systems already have.
+
+From a terminal it is the same, and takes a port if you want one other than
+8000:
 
 ```
 python3 serve.py
 python3 serve.py 9000
 ```
 
-Get the files with `git clone` rather than GitHub's "Download ZIP" if you can.
-`serve.py` checks that `game/supertuxkart.wasm` actually arrived and says so if
-it did not.
+### Windows, step by step
+
+1. **Get Python** if you do not have it. From <https://www.python.org/downloads/>,
+   run the installer and tick **"Add python.exe to PATH"** on the first screen.
+   The Microsoft Store version works too.
+2. **Get the files.** On the GitHub page, click the green **Code** button, then
+   **Download ZIP**. It is about 130 MB, because the compiled game is included.
+3. **Extract it.** Right-click the ZIP, choose **Extract All**, and pick a
+   folder. Play from the extracted folder, not from inside the ZIP — Windows
+   lets you look inside a ZIP without unpacking it, and running from there
+   fails.
+4. **Double-click `serve.py`.** A black console window opens and prints an
+   address.
+5. **Open that address** in Chrome, Edge or Firefox: `http://localhost:8000/`.
+6. **Press Start game** and wait a few seconds for the assets to unpack.
+7. **To stop**, close the black window.
+
+If the black window flashes up and vanishes, Python is either not installed or
+not associated with `.py` files. Re-run the installer from step 1. If a console
+says `Python was not found`, you have Windows' placeholder rather than the real
+thing; install it from python.org.
+
+The server only listens on your own machine, so Windows should not ask about the
+firewall. Nothing is exposed to your network.
 
 ### Why a server at all
 
@@ -50,9 +76,6 @@ Cross-Origin-Embedder-Policy: require-corp
 Python's own `http.server` sends neither, so the game would load and then hang.
 For static hosting, `_headers` applies the same two headers on Netlify and
 Cloudflare Pages.
-
-The first launch unpacks about 115 MiB into the browser's storage, which takes a
-few seconds. After that it starts from that cache.
 
 ## Better textures
 
