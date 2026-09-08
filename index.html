@@ -627,10 +627,18 @@ function compressedSource(baseUrl, manifest, cacheKey, cached, onBytes) {
   });
 }
 
+// The cached copy is only usable if it came from the same bundle. Comparing the
+// chunk count alone is not enough: a rebuilt bundle almost always splits into
+// the same number of parts, so the cache would report a hit and quietly replay
+// the previous build's assets even after the files on disk were replaced. The
+// packed total is what actually distinguishes one build from another.
 async function isCached(cacheKey, manifest) {
   try {
     const meta = await dbGet(cacheKey + "#meta");
-    return !!meta && meta.version === CACHE_VERSION && meta.count === manifest.chunks.length;
+    return !!meta
+      && meta.version === CACHE_VERSION
+      && meta.count === manifest.chunks.length
+      && meta.total === manifest.total;
   } catch (e) {
     return false;
   }

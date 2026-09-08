@@ -46,8 +46,13 @@ class Handler(server.SimpleHTTPRequestHandler):
         self.send_header("Cross-Origin-Opener-Policy", "same-origin")
         self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
         self.send_header("Cross-Origin-Resource-Policy", "same-origin")
-        if self.path.endswith((".html", ".json")) or self.path in ("/", ""):
-            self.send_header("Cache-Control", "no-cache")
+        # On everything, not just the HTML. The asset parts keep the same names
+        # from build to build, so without this a browser is free to reuse an
+        # older copy from its own cache and never ask whether it changed, which
+        # silently pins the game to a stale bundle. "no-cache" still lets it
+        # store them; it just has to revalidate, and unchanged files come back
+        # as a cheap 304.
+        self.send_header("Cache-Control", "no-cache")
         super().end_headers()
 
     def log_message(self, fmt, *args):
@@ -58,6 +63,18 @@ class Handler(server.SimpleHTTPRequestHandler):
 class Server(server.ThreadingHTTPServer):
     daemon_threads = True
     allow_reuse_address = True
+
+
+def describe_bundle(root):
+    """Identify the asset bundle being served, so the console and the page can
+    be compared. If they disagree, the browser is holding a stale copy."""
+    manifest = os.path.join(root, "game", "data_low.tar.gz.manifest")
+    try:
+        with open(manifest) as fh:
+            total = int(fh.readline().strip())
+    except (OSError, ValueError):
+        return "asset bundle: none found"
+    return "asset bundle: {:,} bytes".format(total)
 
 
 def wait_for_exit(message, code):
@@ -122,6 +139,9 @@ def main():
     print("  SuperTuxKart is ready. Open this in your browser:")
     print()
     print("      %s" % url)
+    print()
+    print("  Serving: %s" % root)
+    print("  %s" % describe_bundle(root))
     print()
     print("  Leave this window open while you play.")
     print("  Close it, or press Ctrl+C, to stop.")
