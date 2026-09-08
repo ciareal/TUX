@@ -20,7 +20,7 @@ prints:
 http://localhost:8000/
 ```
 
-Press **Start game**. The first launch unpacks about 115 MiB into the browser's
+Press **Start game**. The first launch unpacks about 117 MiB into the browser's
 storage and takes a few seconds; after that it starts from that cache. Leave the
 console window open while you play, and close it when you are done.
 
@@ -203,15 +203,16 @@ From the port itself, not the launcher:
 
 From the asset pipeline:
 
-- The generator converts textures to JPEG and rewrites the texture names
-  embedded in the `.spm` meshes to match, but it misses a few. A handful of
-  powerup textures are then requested as `.png` when only a `.jpg` was written,
-  and the engine logs `STKTexManager: Failed to load bubblegum.png` and similar
-  for the bubblegum, swatter and nitro models, which render untextured. Build
-  with `--keep-png` to skip the conversion and avoid it, at the cost of a larger
-  bundle.
 - The karts and tracks come from the 1.4 release while the engine is built from
-  the port's branch, so a small amount of drift like this is expected.
+  the port's branch, so a small amount of drift is possible.
+
+`build-game.sh` switches the generator's PNG-to-JPEG conversion off, and the
+bundle here is built that way. That step rewrites the texture names embedded in
+the `.spm` meshes to match, but it misses many: 141 distinct textures were left
+requested as `.png` when only a `.jpg` had been written, so every item model,
+the gift boxes, nitro, bubblegum, bowling balls and the rest, rendered
+untextured. Skipping it costs about 2 MiB in the packed bundle, since pngquant
+and optipng have already shrunk those files.
 
 ## Layout
 

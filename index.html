@@ -283,7 +283,9 @@ if (globalThis.STK_ENGINE_PRESENT) {
 
 const DB_NAME = "stk_db";
 const STORE = "stk_store";
-const CACHE_VERSION = 2;          // bump to invalidate every cached bundle
+// Bump to invalidate every cached bundle. 3: the asset bundle was rebuilt
+// without the JPEG conversion, which had broken the item-model textures.
+const CACHE_VERSION = 3;
 const CHUNK_LIMIT = 16 * 1024 * 1024;
 
 const $ = (id) => document.getElementById(id);
