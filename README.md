@@ -13,26 +13,20 @@ nothing to install and nothing to build.
 
 ## Playing it
 
-### Windows
-
-Double-click **`START-GAME.bat`**. It starts a small local server and opens the
-game in your browser. Leave the black window open while you play, and close it
+Double-click either of these. Both start a small local server and open the game
+in your browser. Leave the window that appears open while you play, and close it
 when you are done.
 
-Nothing is installed. The server is `serve.ps1`, which runs on the PowerShell
-that already ships with Windows.
+- **`serve.py`** — if you have Python. Works on Windows, macOS and Linux.
+- **`START-GAME.bat`** — Windows only, and needs no Python at all. It uses the
+  PowerShell that already ships with Windows.
+
+Either way nothing is installed. From a terminal, `python3 serve.py` does the
+same thing, and takes a port number if you want one other than 8000.
 
 Get the files with `git clone` rather than GitHub's "Download ZIP" if you can.
-The batch file checks that `game/supertuxkart.wasm` actually arrived and says so
+Both launchers check that `game/supertuxkart.wasm` actually arrived and say so
 if it did not.
-
-### macOS and Linux
-
-```
-python3 serve.py
-```
-
-Then open <http://localhost:8000>.
 
 ### Why a server at all
 
@@ -46,10 +40,11 @@ Cross-Origin-Opener-Policy: same-origin
 Cross-Origin-Embedder-Policy: require-corp
 ```
 
-Both bundled servers set them. `serve.ps1` uses a plain loopback socket rather
-than Windows' `HttpListener`, which would want an administrator prompt to
-reserve the URL. For static hosting, `_headers` applies the same two headers on
-Netlify and Cloudflare Pages.
+Both bundled servers set them, which is why an arbitrary static server will not
+do. `serve.ps1` uses a plain loopback socket rather than Windows'
+`HttpListener`, which would want an administrator prompt to reserve the URL. For
+static hosting, `_headers` applies the same two headers on Netlify and
+Cloudflare Pages.
 
 The first launch unpacks about 115 MiB into the browser's storage, which takes a
 few seconds. After that it starts from that cache.
@@ -193,9 +188,9 @@ From the asset pipeline:
 ## Layout
 
 ```
-START-GAME.bat  double-click this on Windows
-serve.ps1       the server it starts, using built-in PowerShell
-serve.py        the same thing for macOS and Linux
+serve.py        double-click to play, anywhere Python is installed
+START-GAME.bat  double-click to play on Windows without Python
+serve.ps1       the server that batch file starts, on built-in PowerShell
 index.html      the launcher, self-contained
 game/           the compiled engine and the low-quality asset bundle
 build-game.sh   rebuilds those, and the larger bundles

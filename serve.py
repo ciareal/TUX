@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
-"""Static server for the SuperTuxKart WebAssembly launcher.
+"""Start SuperTuxKart. Double-click this file, or run it from a terminal.
 
-The engine is compiled with -pthread, so it needs SharedArrayBuffer, which
-browsers only hand out to cross-origin isolated pages. That means these two
-headers are mandatory:
+It serves this folder over HTTP and opens the game in your browser.
+
+A server is needed because the engine is compiled with threads, so the browser
+only grants it SharedArrayBuffer on a page that is *cross-origin isolated*.
+That takes two response headers, which a file:// URL can never carry:
 
     Cross-Origin-Opener-Policy: same-origin
     Cross-Origin-Embedder-Policy: require-corp
 
-Python's plain `http.server` does not send them, so opening the page through it
-gives a runtime that never starts. This server adds them, serves the right MIME
-type for .wasm, and handles requests on threads so the game's worker threads can
-fetch in parallel with the main thread.
+Python's own http.server does not send them, so opening the page through it
+gives a runtime that never starts. This adds them, serves the right MIME type
+for .wasm, and handles requests on threads so the game's worker threads can
+fetch alongside the main thread.
 
-Usage:
-    python3 serve.py [port] [--dir DIRECTORY]
+    python3 serve.py            # http://localhost:8000/
+    python3 serve.py 9000       # a specific port
+    python3 serve.py --no-browser
 """
 
 import argparse
@@ -22,7 +25,11 @@ import functools
 import os
 import socket
 import sys
+import threading
+import webbrowser
 from http import server
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 class Handler(server.SimpleHTTPRequestHandler):
@@ -32,24 +39,24 @@ class Handler(server.SimpleHTTPRequestHandler):
         ".js": "text/javascript",
         ".mjs": "text/javascript",
         ".json": "application/json",
-        ".data": "application/octet-stream",
         ".manifest": "text/plain",
+        # The bundle parts are named data_low.tar.gz.00 and friends. They go out
+        # as opaque bytes on purpose: labelling them gzip would make the browser
+        # inflate them on the way in, and the launcher does that itself.
+        ".data": "application/octet-stream",
     }
 
     def end_headers(self):
         self.send_header("Cross-Origin-Opener-Policy", "same-origin")
         self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
         self.send_header("Cross-Origin-Resource-Policy", "same-origin")
-        # The bundle parts are content-addressed by the build, but the launcher
-        # and config change often enough that caching them is a nuisance.
         if self.path.endswith((".html", ".json")) or self.path in ("/", ""):
             self.send_header("Cache-Control", "no-cache")
         super().end_headers()
 
     def log_message(self, fmt, *args):
-        if os.environ.get("STK_QUIET"):
-            return
-        super().log_message(fmt, *args)
+        if not os.environ.get("STK_QUIET"):
+            super().log_message(fmt, *args)
 
 
 class Server(server.ThreadingHTTPServer):
@@ -57,38 +64,90 @@ class Server(server.ThreadingHTTPServer):
     allow_reuse_address = True
 
 
+def wait_for_exit(message, code):
+    """Keep the console window up when double-clicked, so errors are readable."""
+    print(message, file=sys.stderr)
+    try:
+        if sys.stdin and sys.stdin.isatty():
+            input("\nPress Enter to close this window.")
+    except (EOFError, KeyboardInterrupt):
+        pass
+    sys.exit(code)
+
+
 def main():
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("port", nargs="?", type=int, default=8000)
-    parser.add_argument("--dir", default=os.path.dirname(os.path.abspath(__file__)),
-                        help="directory to serve (defaults to this file's folder)")
+    parser.add_argument("--dir", default=HERE,
+                        help="folder to serve (defaults to this file's folder)")
     parser.add_argument("--bind", default="127.0.0.1",
                         help="address to bind (use 0.0.0.0 to allow other machines)")
+    parser.add_argument("--no-browser", action="store_true",
+                        help="do not open a browser window")
     args = parser.parse_args()
 
     root = os.path.abspath(args.dir)
     if not os.path.isdir(root):
-        sys.exit(f"not a directory: {root}")
+        wait_for_exit("Not a folder: %s" % root, 1)
 
-    if not os.path.isdir(os.path.join(root, "game")):
-        print("note: no 'game/' directory here, so the launcher will report the",
-              "build as missing. See README.md for how to produce it.\n", file=sys.stderr)
+    if not os.path.isfile(os.path.join(root, "index.html")):
+        wait_for_exit(
+            "There is no index.html in %s.\n"
+            "Run this from inside the game folder." % root, 1)
 
+    if not os.path.isfile(os.path.join(root, "game", "supertuxkart.wasm")):
+        print("Warning: game/supertuxkart.wasm is missing, so the page will",
+              file=sys.stderr)
+        print("report the game as not built. If you downloaded a ZIP from",
+              file=sys.stderr)
+        print("GitHub, the large files may not have come with it; use git",
+              file=sys.stderr)
+        print("clone instead. See README.md.\n", file=sys.stderr)
+
+    # Step forward if the port is busy, so a stale server does not block a restart.
     handler = functools.partial(Handler, directory=root)
-    try:
-        httpd = Server((args.bind, args.port), handler)
-    except OSError as exc:
-        sys.exit(f"could not bind {args.bind}:{args.port} ({exc})")
+    httpd = None
+    for port in range(args.port, args.port + 25):
+        try:
+            httpd = Server((args.bind, port), handler)
+            break
+        except OSError:
+            continue
+    if httpd is None:
+        wait_for_exit(
+            "Could not open a port between %d and %d.\n"
+            "Something else is using them." % (args.port, args.port + 24), 1)
 
-    host = args.bind if args.bind != "0.0.0.0" else socket.gethostname()
-    print(f"serving {root}")
-    print(f"open http://{host}:{args.port}/  (cross-origin isolation enabled)")
+    port = httpd.server_address[1]
+    host = "localhost" if args.bind in ("127.0.0.1", "0.0.0.0") else args.bind
+    url = "http://%s:%d/" % (host, port)
+
+    print()
+    print("  SuperTuxKart is being served from:")
+    print("  %s" % url)
+    print()
+    print("  Leave this window open while you play.")
+    print("  Close it, or press Ctrl+C, to stop.")
+    print()
+
+    if not args.no_browser:
+        # after a beat, so the first request lands on a listening socket
+        threading.Timer(0.5, lambda: webbrowser.open(url)).start()
+
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nstopped")
+        print("\nStopped.")
+    finally:
+        httpd.server_close()
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit:
+        raise
+    except Exception as exc:  # noqa: BLE001 - last resort for a double-click
+        wait_for_exit("Unexpected error: %s" % exc, 1)
