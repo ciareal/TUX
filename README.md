@@ -20,7 +20,7 @@ prints:
 http://localhost:8000/
 ```
 
-Press **Start game**. The first launch unpacks about 117 MiB into the browser's
+Press **Start game**. The first launch unpacks about 116 MiB into the browser's
 storage and takes a few seconds; after that it starts from that cache. Leave the
 console window open while you play, and close it when you are done.
 
@@ -59,6 +59,20 @@ thing; install it from python.org.
 
 The server only listens on your own machine, so Windows should not ask about the
 firewall. Nothing is exposed to your network.
+
+### Checking which build you are running
+
+The launcher prints the exact size of the asset bundle it found, under the
+Start button:
+
+```
+asset bundle: 122,025,119 bytes
+```
+
+That number identifies the build. If textures are missing and it reads
+`120,240,226`, you are running the older files that had the broken texture
+names; download the repository again. Clearing the browser cache will not help
+there, because the cache is refilled from whatever is in your `game` folder.
 
 ### Why a server at all
 

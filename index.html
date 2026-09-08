@@ -116,6 +116,10 @@
   }
   #log.on { display: block; }
   footer { margin-top: 16px; font-size: 11.5px; color: #6c7691; }
+  #bundle_info {
+    margin-top: 10px; font-size: 11.5px; color: #6c7691;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
   .spacer { flex: 1 1 auto; }
   #hud {
     position: absolute; top: 10px; right: 12px; z-index: 3;
@@ -182,6 +186,8 @@
     </div>
 
     <div id="log"></div>
+
+    <div id="bundle_info"></div>
 
     <footer>
       Assets are cached in this browser after the first download. Game progress and settings
@@ -293,11 +299,13 @@ const els = {
   overlay: $("overlay"), panel: $("panel"), start: $("start"), quality: $("quality"),
   clear: $("clear"), status: $("status"), progress: $("progress"), bar: $("bar"),
   note: $("note"), noteTitle: $("note-title"), noteBody: $("note-body"),
+  bundleInfo: $("bundle_info"),
   log: $("log"), hud: $("hud"), fullscreen: $("fullscreen"), save: $("save"),
   canvas: $("canvas")
 };
 
 const GAME_BASE = globalThis.STK_BASE;
+let bundleSizes = {};
 let idbfsMount = null;
 let syncing = false;
 let launched = false;
@@ -737,6 +745,7 @@ async function probeBundles() {
   }));
 
   let available = 0;
+  bundleSizes = {};
   options.forEach((opt, i) => {
     const size = sizes[i];
     const label = opt.dataset.label;
@@ -746,6 +755,7 @@ async function probeBundles() {
     } else {
       available++;
       opt.disabled = false;
+      bundleSizes[opt.value] = size;
       const whole = Math.round(size / (1024 * 1024));
       opt.textContent = size > 0 ? `${label} \u2014 ${whole} MiB download` : label;
     }
@@ -756,7 +766,18 @@ async function probeBundles() {
     const first = options.find((opt) => !opt.disabled);
     if (first) els.quality.value = first.value;
   }
+  showBundleInfo();
   return available;
+}
+
+// The exact byte count identifies the build precisely. Rounded megabytes are
+// too close together to tell one asset bundle from another when someone is
+// trying to work out whether they are running an old copy.
+function showBundleInfo() {
+  const size = bundleSizes[els.quality.value];
+  els.bundleInfo.textContent = size
+    ? `asset bundle: ${size.toLocaleString("en-US")} bytes`
+    : "";
 }
 
 function missingBuildNote() {
@@ -893,6 +914,8 @@ els.clear.onclick = async () => {
   }
   els.clear.disabled = false;
 };
+
+els.quality.onchange = showBundleInfo;
 
 els.fullscreen.onclick = () => {
   if (document.fullscreenElement) document.exitFullscreen();
